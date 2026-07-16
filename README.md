@@ -120,3 +120,50 @@ python solve_stochastic_problem.py
 > [!tip]
 > You can use `python -i solve_main_problem.py` to execute the script in interactive mode, opening the Python interpreter
 > at the end of the script, providing you with the opportunity to post-process results by-hand.
+
+## Read the results
+When `solve_stochastic_problem.py` finishes it saves a `metrics_<instance>.pickle`
+and several `graph_mp*.png` route images. To turn the pickle into a readable
+summary (best objective, its breakdown, and the best truck routes by station
+name) use `show_results.py`:
+```bash
+python show_results.py            # newest metrics_*.pickle in the folder
+python show_results.py --plot     # also plot MP / SP / best-objective curves
+python show_results.py metrics_VELOV_LYON_6s_2t_snap0500.pickle   # a specific file
+```
+Example output:
+```
+BEST solution found at iteration 4 of 12
+  SP objective (lower = better) : 2.1500
+  route cost (MP)               : 1.6600
+  avg demand dissatisfaction    : 6.5000  (over 729 scenarios)
+Best truck routes:
+  Truck 1: DEPOT  ->  LES HALLES  ->  FOCH  ->  DEPOT
+  Truck 2: DEPOT  ->  QUAI SARRAIL  ->  PLACE EDGAR QUINET  ->  DEPOT
+```
+
+
+## Tests
+The tests check the code (path extraction, plotting helpers), not the solver
+output. They are optional — run them if you edit the code:
+```bash
+pytest
+```
+`test_show_functions.py` reads the database and is skipped automatically if the
+DB isn't available.
+
+## Benchmarks
+The scripts in `benchmark/` are standalone performance experiments (how solve
+time grows with problem size). They use randomly generated instances and do
+**not** touch your database. Run them from the project root so the `models/`
+paths resolve:
+```bash
+python benchmark/benchmark_mp_1.py     # Main Problem timing
+python benchmark/benchmark_rp_1.py     # Recourse Problem timing
+python benchmark/benchmark_rp_2.py     # Recourse Problem timing (with GC control)
+python benchmark/benchmark_rp_3.py     # solver comparison
+```
+> [!note]
+> `benchmark_extract_path_from_ampl.py` additionally requires `perfplot`
+> (`pip install perfplot`). The benchmarks are research tools and are not needed
+> to produce your Velo'v results.

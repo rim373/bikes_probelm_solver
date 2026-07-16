@@ -1,0 +1,13 @@
+# python
+__pycache__
+.pytest_cache/
+venv
+
+# other
+graph.png
+plot.png
+output/
+
+# secrets / machine-specific
+.env
+.env.example
